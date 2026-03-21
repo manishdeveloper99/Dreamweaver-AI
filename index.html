@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dreamweaver AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--primary:#3a7bd5;
+--accent:#00d2ff;
+--bg:#f5f7ff;
+--card:#ffffff;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins;}
+body{background:var(--bg);color:#333;}
+
+/* NAVBAR */
+header{
+display:flex;justify-content:space-between;align-items:center;
+padding:15px 5%;background:white;position:fixed;width:100%;
+z-index:1000;box-shadow:0 5px 20px rgba(0,0,0,.05);
+}
+.logo{font-size:24px;font-weight:700;color:var(--primary);}
+nav{display:flex;gap:30px;align-items:center;}
+nav a{text-decoration:none;color:#333;font-weight:500;}
+.btn-start{
+background:linear-gradient(135deg,#3a7bd5,#00d2ff);
+color:white;padding:10px 20px;border-radius:25px;
+}
+
+/* HERO */
+.hero{
+display:flex;align-items:center;justify-content:space-between;
+padding:120px 5% 60px;flex-wrap:wrap;
+}
+.hero-text{max-width:500px;}
+.hero h1{font-size:42px;margin-bottom:10px;}
+.hero span{color:var(--primary);}
+.hero p{margin:20px 0;opacity:.8;}
+.hero-buttons{display:flex;gap:15px;}
+.btn{padding:12px 28px;border-radius:25px;border:none;cursor:pointer;font-weight:500;}
+.primary{background:linear-gradient(135deg,#3a7bd5,#00d2ff);color:white;}
+.secondary{background:#eaeefc;}
+.hero img{width:380px;}
+
+/* FEATURES */
+.features{padding:60px 5%;text-align:center;}
+.features h2{margin-bottom:40px;}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;}
+.feature-card{background:white;padding:25px;border-radius:12px;box-shadow:0 5px 20px rgba(0,0,0,.05);}
+.feature-card h3{margin:10px 0;}
+
+/* SCHOLARSHIP ROW */
+.row{padding:60px 5%;}
+.card-container{display:flex;gap:20px;overflow-x:auto;}
+.card{
+min-width:250px;background:white;border-radius:12px;
+overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,.1);transition:.3s;cursor:pointer;
+}
+.card:hover{transform:translateY(-8px);}
+.card img{width:100%;height:150px;object-fit:cover;}
+.card-title{padding:15px;font-weight:500;}
+
+/* CTA */
+.cta{text-align:center;padding:60px 20px;}
+.cta h2{margin-bottom:15px
+
+/* AI BUTTON */
+.dreampilot-ai{
+position:fixed;bottom: 25px;right: 25px;width::content 75px;height:70px;
+border-radius:50%;background:linear-gradient(135deg,#3a7bd5,#00d2ff);
+display:flex;align-items:center;justify-content:center;font-size:28px;
+color:white;box-shadow:0 0 25px rgba(0,210,255,.6);cursor:pointer;
+text-decoration:none;
+  <img src="https://C:\Users\Admin\Desktop\Dreamweavear ai\frontend\assets">
+}
+
+/* FOOTER */
+footer{background:#0f1b3d;color:white;padding:40px;margin-top:60px;text-align:center;}
+
+/* MOBILE */
+@media(max-width:768px){
+.hero{flex-direction:column;text-align:center;}
+.hero img{margin-top:30px;width:280px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Dreamweaver AI</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Features</a>
+    <a href="#">Scholarships</a>
+    <a href="pages/login.html">Login</a>
+    <a href="pages/register.html" class="btn-start">Get Started</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Your <span>AI Companion</span> for Scholarships</h1>
+    <p>Find scholarships, fill forms and get guidance using Dream-Pilot AI.</p>
+    <div class="hero-buttons">
+      <button class="btn primary" onclick="window.location.href='pages/register.html'">Start Now</button>
+      <button class="btn secondary" onclick="window.location.href='pages/login.html'">Explore Scholarships</button>
+    </div>
+  </div>
+  <img src="https://images.unsplash.com/photo-1523240715630-971c7e03432b">
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <h2>How Dreamweaver AI Helps You</h2>
+  <div class="feature-grid">
+    <div class="feature-card"><h3>Scholarship Finder</h3><p>Discover scholarships based on your profile.</p></div>
+    <div class="feature-card"><h3>Form Assistant</h3><p>Step-by-step help filling scholarship forms.</p></div>
+    <div class="feature-card"><h3>Voice Interaction</h3><p>Ask questions using voice commands.</p></div>
+    <div class="feature-card"><h3>Document Guidance</h3><p>Know which documents to upload.</p></div>
+  </div>
+</section>
+
+<!-- SCHOLARSHIPS -->
+<section class="row">
+  <h2>Trending Scholarships</h2>
+  <div class="card-container">
+    <div class="card" onclick="window.location.href='pages/login.html'">
+      <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f">
+      <div class="card-title">Polytechnic Merit Grant</div>
+    </div>
+    <div class="card" onclick="window.location.href='pages/login.html'">
+      <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad">
+      <div class="card-title">UP Board Topper Award</div>
+    </div>
+    <div class="card" onclick="window.location.href='pages/login.html'">
+      <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846">
+      <div class="card-title">AI Tech Scholarship</div>
+    </div>
+    <div class="card" onclick="window.location.href='pages/login.html'">
+      <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70">
+      <div class="card-title">Women in STEM</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>Start Finding Scholarships Today</h2>
+  <p>Join thousands of students using Dreamweaver AI</p>
+  <br>
+  <button class="btn primary" onclick="window.location.href='pages/register.html'">Get Started – It's Free</button>
+</section>
+
+<footer>
+  <p>Dreamweaver AI © 2026</p>
+  <p style="opacity:.7;font-size:13px">Helping students reach their dreams.</p>
+</footer>
+
+<!-- DREAM-PILOT AI FAB — opens dreampilot chat -->
+<a href="pages/dreampilot.html" class="dreampilot-ai">🤖</a>
+
+</body>
+</html>
