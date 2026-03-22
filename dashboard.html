@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard | Dreamweaver AI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+<link rel="stylesheet" href="../css/style.css"/>
+<link rel="stylesheet" href="../css/dashboard.css"/>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <i class="fas fa-graduation-cap"></i>
+    <span>Dreamweaver AI</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" onclick="showSection('home')"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="#" class="nav-item" onclick="showSection('scholarships')"><i class="fas fa-award"></i> Scholarships</a>
+    <a href="#" class="nav-item" onclick="showSection('applications')"><i class="fas fa-file-alt"></i> My Applications</a>
+    <a href="report.html" class="nav-item"><i class="fas fa-upload"></i> Documents</a>
+    <a href="#" class="nav-item" onclick="showSection('profile')"><i class="fas fa-user"></i> Profile</a>
+  </nav>
+  <div class="sidebar-bottom">
+    <a href="#" class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="topbar-right">
+      <div class="notif-icon" onclick="showSection('notifications')">
+        <i class="fas fa-bell"></i>
+      </div>
+      <div class="user-avatar">
+        <span id="userInitial">S</span>
+      </div>
+      <span id="userName" class="user-name">Student</span>
+    </div>
+  </div>
+
+  <!-- HOME SECTION -->
+  <section class="section active" id="section-home">
+    <h1 class="section-title">Welcome back, <span id="greetName">Student</span> 👋</h1>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <i class="fas fa-award"></i>
+        <div><div class="stat-num" id="totalScholarships">—</div><div class="stat-label">Available Scholarships</div></div>
+      </div>
+      <div class="stat-card green">
+        <i class="fas fa-file-alt"></i>
+        <div><div class="stat-num" id="myApps">—</div><div class="stat-label">My Applications</div></div>
+      </div>
+      <div class="stat-card orange">
+        <i class="fas fa-check-circle"></i>
+        <div><div class="stat-num" id="approvedApps">—</div><div class="stat-label">Approved</div></div>
+      </div>
+    </div>
+
+    <!-- Quick Filter -->
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="🔍 Search scholarships..." oninput="filterScholarships()"/>
+      <select id="filterState" onchange="filterScholarships()">
+        <option value="">All States</option>
+        <option>Uttar Pradesh</option><option>Delhi</option>
+        <option>Madhya Pradesh</option><option>Bihar</option>
+        <option>Rajasthan</option><option>Maharashtra</option>
+      </select>
+      <select id="filterCategory" onchange="filterScholarships()">
+        <option value="">All Categories</option>
+        <option>General</option><option>OBC</option><option>SC</option><option>ST</option><option>EWS</option>
+      </select>
+      <select id="filterClass" onchange="filterScholarships()">
+        <option value="">All Classes</option>
+        <option>Class 10</option><option>Class 11</option><option>Class 12</option>
+        <option>Polytechnic</option><option>B.Tech</option>
+      </select>
+    </div>
+
+    <!-- Scholarship List -->
+    <h2 class="sub-title">Available Scholarships</h2>
+    <div id="scholarshipList" class="scholarship-grid">
+      <p class="loading">Loading...</p>
+    </div>
+  </section>
+
+  <!-- SCHOLARSHIPS SECTION -->
+  <section class="section" id="section-scholarships">
+    <h1 class="section-title">All Scholarships</h1>
+    <div id="allScholarshipList" class="scholarship-grid">
+      <p class="loading">Loading...</p>
+    </div>
+  </section>
+
+  <!-- APPLICATIONS SECTION -->
+  <section class="section" id="section-applications">
+    <h1 class="section-title">My Applications</h1>
+    <div id="applicationList" class="app-list">
+      <p class="loading">Loading...</p>
+    </div>
+  </section>
+
+  <!-- PROFILE SECTION -->
+  <section class="section" id="section-profile">
+    <h1 class="section-title">My Profile</h1>
+    <div class="profile-card">
+      <div class="profile-avatar" id="profileInitial">S</div>
+      <div class="profile-info">
+        <p><strong>Name:</strong> <span id="profileName">—</span></p>
+        <p><strong>Email:</strong> <span id="profileEmail">—</span></p>
+        <p><strong>State:</strong> <span id="profileState">—</span></p>
+        <p><strong>Class:</strong> <span id="profileClass">—</span></p>
+        <p><strong>Category:</strong> <span id="profileCat">—</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTIFICATIONS SECTION -->
+  <section class="section" id="section-notifications">
+    <h1 class="section-title">Notifications</h1>
+    <div id="notifList" class="notif-list">
+      <p class="loading">Loading...</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- Floating AI Button -->
+<div class="dreampilot-fab" onclick="window.location.href='../index.html'">
+  🤖
+  <span class="fab-label">AI</span>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/dashboard.js"></script>
+<script>
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const sec = document.getElementById('section-' + name);
+  if (sec) sec.classList.add('active');
+
+  // Load on demand
+  if (name === 'scholarships') loadScholarships();
+  if (name === 'applications') loadApplications();
+  if (name === 'notifications') loadNotifications();
+  if (name === 'profile') loadProfile();
+}
+
+// Set greeting
+window.addEventListener('DOMContentLoaded', () => {
+  const user = getUser ? getUser() : {};
+  const firstName = (user.name || 'Student').split(' ')[0];
+  const greet = document.getElementById('greetName');
+  const uName = document.getElementById('userName');
+  const uInit = document.getElementById('userInitial');
+  const pInit = document.getElementById('profileInitial');
+  if (greet) greet.textContent = firstName;
+  if (uName) uName.textContent = firstName;
+  if (uInit) uInit.textContent = firstName[0]?.toUpperCase() || 'S';
+  if (pInit) pInit.textContent = firstName[0]?.toUpperCase() || 'S';
+});
+</script>
+</body>
+</html>

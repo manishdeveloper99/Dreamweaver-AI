@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Documents & Applications | Dreamweaver AI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+<link rel="stylesheet" href="../css/style.css"/>
+<link rel="stylesheet" href="../css/dashboard.css"/>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <i class="fas fa-graduation-cap"></i><span>Dreamweaver AI</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="dashboard.html" class="nav-item"><i class="fas fa-award"></i> Scholarships</a>
+    <a href="#" class="nav-item" onclick="showTab('applications')"><i class="fas fa-file-alt"></i> My Applications</a>
+    <a href="#" class="nav-item active" onclick="showTab('documents')"><i class="fas fa-upload"></i> Documents</a>
+  </nav>
+  <div class="sidebar-bottom">
+    <a href="#" class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="topbar">
+    <button class="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="topbar-right">
+      <span class="user-name" id="userName">Student</span>
+    </div>
+  </div>
+
+  <!-- TAB NAVIGATION -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="documents"    onclick="showTab('documents')">📁 My Documents</button>
+    <button class="tab-btn"        data-tab="applications" onclick="showTab('applications')">📋 My Applications</button>
+    <button class="tab-btn"        data-tab="scholarship"  onclick="showTab('scholarship')">🎓 Scholarship Detail</button>
+  </div>
+
+  <!-- DOCUMENTS TAB -->
+  <div class="tab-content" id="tab-documents">
+    <h2 class="sub-title">Upload Documents</h2>
+
+    <form id="uploadForm" class="upload-form">
+      <div class="form-row">
+        <div class="input-group">
+          <label>Document Type</label>
+          <select id="docType">
+            <option value="aadhar">Aadhar Card</option>
+            <option value="marksheet">Marksheet</option>
+            <option value="income_cert">Income Certificate</option>
+            <option value="passbook">Bank Passbook</option>
+            <option value="domicile">Domicile Certificate</option>
+            <option value="admission_letter">Admission Letter</option>
+            <option value="school_certificate">School Certificate</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Select File (JPG / PNG / PDF, max 5MB)</label>
+          <input type="file" id="docFile" accept=".jpg,.jpeg,.png,.pdf"/>
+        </div>
+      </div>
+      <button type="submit" class="btn primary"><i class="fas fa-upload"></i> Upload Document</button>
+    </form>
+
+    <h2 class="sub-title" style="margin-top:30px;">Uploaded Documents</h2>
+    <div id="documentsList" class="doc-list">
+      <p class="loading">Loading...</p>
+    </div>
+  </div>
+
+  <!-- APPLICATIONS TAB -->
+  <div class="tab-content" id="tab-applications" style="display:none;">
+    <h2 class="sub-title">My Applications</h2>
+    <div id="myApplications" class="app-cards">
+      <p class="loading">Loading...</p>
+    </div>
+  </div>
+
+  <!-- SCHOLARSHIP DETAIL TAB -->
+  <div class="tab-content" id="tab-scholarship" style="display:none;">
+    <div id="scholarshipDetail">
+      <p class="empty">Select a scholarship from the <a href="dashboard.html">Dashboard</a> to view details here.</p>
+    </div>
+  </div>
+
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/report.js"></script>
+<script>
+function showTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).style.display = 'block';
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  if (tab === 'applications') loadMyApplications();
+}
+</script>
+</body>
+</html>

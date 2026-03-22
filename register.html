@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Register | Dreamweaver AI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+<link rel="stylesheet" href="../css/style.css"/>
+<style>
+body{background:#f4f7f6;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;}
+.register-container{background:#fff;padding:40px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.07);width:100%;max-width:480px;}
+.brand{font-size:22px;font-weight:700;color:#4a90e2;text-align:center;margin-bottom:6px;}
+.subtitle{text-align:center;color:#777;font-size:13px;margin-bottom:24px;}
+.row-2{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.input-group{margin-bottom:16px;}
+.input-group label{display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:#444;}
+.input-group input,
+.input-group select{width:100%;padding:11px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;transition:border-color .2s;}
+.input-group input:focus,
+.input-group select:focus{border-color:#4a90e2;}
+.error-msg{color:#e74c3c;font-size:13px;margin-bottom:12px;display:none;}
+.btn-register{width:100%;padding:12px;background:#4a90e2;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn-register:hover{background:#357abd;}
+.login-link{text-align:center;margin-top:16px;font-size:13px;color:#777;}
+.login-link a{color:#4a90e2;text-decoration:none;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="register-container">
+  <div class="brand"><i class="fas fa-graduation-cap"></i> Dreamweaver AI</div>
+  <p class="subtitle">Create your student account</p>
+
+  <p class="error-msg" id="registerError"></p>
+
+  <form id="registerForm">
+    <div class="input-group">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" placeholder="Rahul Sharma" required/>
+    </div>
+
+    <div class="input-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="rahul@email.com" required/>
+    </div>
+
+    <div class="row-2">
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Min 8 chars" required/>
+      </div>
+      <div class="input-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" placeholder="Repeat password" required/>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" placeholder="10-digit mobile number"/>
+    </div>
+
+    <div class="row-2">
+      <div class="input-group">
+        <label for="state">State</label>
+        <select id="state">
+          <option value="">— Select State —</option>
+          <option>Uttar Pradesh</option>
+          <option>Delhi</option>
+          <option>Madhya Pradesh</option>
+          <option>Rajasthan</option>
+          <option>Bihar</option>
+          <option>Maharashtra</option>
+          <option>Gujarat</option>
+          <option>West Bengal</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="class">Class / Course</label>
+        <select id="class">
+          <option value="">— Select —</option>
+          <option>Class 10</option>
+          <option>Class 11</option>
+          <option>Class 12</option>
+          <option>Polytechnic 1st Year</option>
+          <option>Polytechnic 2nd Year</option>
+          <option>Polytechnic 3rd Year</option>
+          <option>B.Tech 1st Year</option>
+          <option>B.Tech 2nd Year</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="category">Category</label>
+      <select id="category">
+        <option value="">— Select Category —</option>
+        <option>General</option>
+        <option>OBC</option>
+        <option>SC</option>
+        <option>ST</option>
+        <option>EWS</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn-register">Create Account</button>
+  </form>
+
+  <p class="login-link">Already have an account? <a href="login.html">Sign In</a></p>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>

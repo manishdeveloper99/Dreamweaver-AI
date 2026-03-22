@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login | Dreamweaver AI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+<link rel="stylesheet" href="../css/style.css"/>
+<style>
+body{background:#f4f7f6;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;}
+.login-container{background:#fff;padding:40px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.07);width:100%;max-width:400px;text-align:center;}
+.brand{font-size:24px;font-weight:700;color:#4a90e2;margin-bottom:6px;}
+.subtitle{color:#777;font-size:13px;margin-bottom:28px;}
+.input-group{text-align:left;margin-bottom:18px;position:relative;}
+.input-group label{display:block;font-size:13px;font-weight:500;margin-bottom:6px;color:#444;}
+.input-group input{width:100%;padding:11px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;transition:border-color .2s;}
+.input-group input:focus{border-color:#4a90e2;}
+.eye-icon{position:absolute;right:14px;top:36px;color:#aaa;cursor:pointer;}
+.action-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:13px;}
+.remember{display:flex;align-items:center;gap:6px;}
+.forgot{color:#4a90e2;text-decoration:none;}
+.forgot:hover{text-decoration:underline;}
+.btn-login{width:100%;padding:12px;background:#4a90e2;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:background .2s;}
+.btn-login:hover{background:#357abd;}
+.or{margin:20px 0;position:relative;color:#aaa;font-size:13px;}
+.or::before,.or::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:#ddd;}
+.or::before{left:0;}.or::after{right:0;}
+.social-row{display:flex;justify-content:center;gap:12px;margin-bottom:20px;}
+.social-btn{flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;}
+.social-btn:hover{background:#f5f5f5;}
+.signup-link{font-size:13px;color:#777;}
+.signup-link a{color:#4a90e2;text-decoration:none;font-weight:600;}
+.error-msg{color:#e74c3c;font-size:13px;margin-bottom:14px;display:none;}
+</style>
+</head>
+<body>
+
+<div class="login-container">
+  <div class="brand"><i class="fas fa-graduation-cap"></i> Dreamweaver AI</div>
+  <p class="subtitle">Welcome back! Sign in to your account.</p>
+
+  <p class="error-msg" id="loginError"></p>
+
+  <form id="loginForm">
+    <div class="input-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" placeholder="name@email.com" required/>
+    </div>
+
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="••••••••" required/>
+      <i class="fas fa-eye eye-icon" id="togglePassword"></i>
+    </div>
+
+    <div class="action-bar">
+      <label class="remember">
+        <input type="checkbox" id="remember"/> Remember me
+      </label>
+      <a href="forgot.html" class="forgot">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="btn-login">Sign In</button>
+  </form>
+
+  <div class="or">or</div>
+
+  <div class="social-row">
+    <button class="social-btn" onclick="alert('Google login — connect OAuth in backend.')">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" alt="G"/> Google
+    </button>
+    <button class="social-btn" onclick="alert('GitHub login — connect OAuth in backend.')">
+      <i class="fab fa-github" style="font-size:18px;"></i> GitHub
+    </button>
+  </div>
+
+  <p class="signup-link">Don't have an account? <a href="register.html">Create one</a></p>
+</div>
+
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<script>
+  // Password visibility toggle
+  document.getElementById('togglePassword').addEventListener('click', function(){
+    const inp = document.getElementById('password');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    this.classList.toggle('fa-eye-slash');
+  });
+</script>
+</body>
+</html>

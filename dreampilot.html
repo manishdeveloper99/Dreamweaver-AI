@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dream-Pilot AI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#111;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Google Sans',system-ui,sans-serif;}
+.app{width:100%;max-width:420px;height:100vh;max-height:860px;background:#1a1a1a;display:flex;flex-direction:column;overflow:hidden;position:relative;}
+
+/* Sidebar */
+.sidebar{position:absolute;top:0;left:-280px;width:280px;height:100%;background:#202124;z-index:100;transition:left .3s ease;display:flex;flex-direction:column;border-right:1px solid #2e2e2e;}
+.sidebar.open{left:0;}
+.sidebar-header{padding:24px 20px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2e2e2e;}
+.sidebar-logo{width:32px;height:32px;border-radius:8px;object-fit:contain;}
+.sidebar-title{color:#e8eaed;font-size:16px;font-weight:600;}
+.sidebar-subtitle{color:#888;font-size:11px;margin-top:2px;}
+.sidebar-menu{padding:12px 0;flex:1;overflow-y:auto;}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:12px 20px;cursor:pointer;color:#bdc1c6;font-size:14px;transition:background .15s;text-decoration:none;}
+.sidebar-item:hover{background:#2a2a2a;}
+.sidebar-item svg{width:18px;height:18px;flex-shrink:0;}
+.sidebar-section{padding:8px 20px 4px;color:#666;font-size:11px;text-transform:uppercase;letter-spacing:.8px;margin-top:8px;}
+.sidebar-footer{padding:16px 20px;border-top:1px solid #2e2e2e;color:#555;font-size:12px;}
+
+.overlay{display:none;position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:99;}
+.overlay.show{display:block;}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 10px;flex-shrink:0;}
+.hamburger{display:flex;flex-direction:column;gap:4.5px;cursor:pointer;padding:4px;}
+.hamburger span{display:block;width:20px;height:2px;background:#bdc1c6;border-radius:2px;}
+.top-center{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.app-name{color:#e8eaed;font-size:17px;font-weight:500;}
+.model-badge{background:#2a2a2a;color:#9aa0a6;font-size:12px;padding:2px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;cursor:pointer;border:none;font-family:inherit;}
+.model-badge svg{width:11px;height:11px;fill:#9aa0a6;}
+.icon-top-btn{background:#2a2a2a;border:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.icon-top-btn:hover{background:#333;}
+.icon-top-btn svg{width:18px;height:18px;fill:#9aa0a6;}
+
+/* Body */
+.body{flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 20px 16px;gap:20px;}
+.body::-webkit-scrollbar{width:4px;}
+.body::-webkit-scrollbar-thumb{background:#333;border-radius:4px;}
+
+.hero{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;}
+.hero-logo{width:80px;height:80px;border-radius:18px;object-fit:contain;}
+.hero-title{font-size:24px;font-weight:600;color:#e8eaed;line-height:1.3;}
+.hero-sub{font-size:13px;color:#888;line-height:1.6;max-width:280px;}
+
+.chips-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;}
+.chip{background:#252525;border:1px solid #333;border-radius:22px;padding:8px 14px;font-size:13px;color:#bdc1c6;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .15s;}
+.chip:hover{background:#2e2e2e;border-color:#444;}
+.chip svg{width:14px;height:14px;flex-shrink:0;}
+
+/* Chat */
+.chat-area{width:100%;display:flex;flex-direction:column;gap:12px;padding:0 4px;}
+.msg{max-width:82%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.55;animation:fadeIn .2s ease;white-space:pre-wrap;word-break:break-word;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;}}
+.msg.user{background:#1a73e8;color:#fff;align-self:flex-end;border-bottom-right-radius:4px;}
+.msg.bot{background:#252525;color:#e8eaed;align-self:flex-start;border-bottom-left-radius:4px;border:1px solid #333;}
+.bot-header{display:flex;align-items:center;gap:7px;margin-bottom:6px;}
+.bot-icon{width:18px;height:18px;border-radius:4px;object-fit:contain;}
+.bot-label{font-size:11px;color:#888;}
+
+/* Typing */
+.typing-dots{display:flex;gap:5px;padding:4px 2px;}
+.typing-dots span{width:7px;height:7px;background:#555;border-radius:50%;animation:bounce 1.2s infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+
+/* Student Form Card */
+.form-card{
+  background:#1e2130;border:1px solid #2e3a55;border-radius:14px;
+  padding:18px;margin-top:8px;width:100%;
+}
+.form-card h4{color:#e8eaed;font-size:14px;margin-bottom:14px;}
+.fc-group{margin-bottom:11px;}
+.fc-group label{display:block;color:#9aa0a6;font-size:11px;margin-bottom:5px;}
+.fc-group input,.fc-group select{
+  width:100%;background:#252525;border:1px solid #333;border-radius:8px;
+  padding:9px 11px;color:#e8eaed;font-size:13px;font-family:inherit;outline:none;
+  transition:border-color .2s;box-sizing:border-box;
+}
+.fc-group input:focus,.fc-group select:focus{border-color:#4a7bd5;}
+.fc-group select option{background:#252525;}
+.fc-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.fc-submit{
+  width:100%;background:linear-gradient(135deg,#3a7bd5,#00d2ff);
+  color:white;border:none;border-radius:10px;padding:11px;
+  font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;
+  margin-top:6px;transition:opacity .2s;
+}
+.fc-submit:hover{opacity:.88;}
+
+/* Input Area */
+.input-wrap{padding:0 16px 20px;flex-shrink:0;}
+.input-box{background:#252525;border-radius:20px;border:1px solid #333;display:flex;flex-direction:column;padding:12px 14px 10px;transition:border-color .2s;}
+.input-box:focus-within{border-color:#555;}
+.input-field{background:transparent;border:none;outline:none;color:#e8eaed;font-size:15px;font-family:inherit;resize:none;max-height:100px;min-height:24px;line-height:1.5;}
+.input-field::placeholder{color:#555;}
+.input-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.input-left{display:flex;align-items:center;gap:4px;}
+.icon-btn{width:34px;height:34px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.icon-btn:hover{background:#333;}
+.icon-btn svg{width:19px;height:19px;fill:#9aa0a6;}
+.input-right{display:flex;align-items:center;gap:6px;}
+.send-btn{width:34px;height:34px;border-radius:50%;border:none;background:#1a73e8;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s,transform .1s;}
+.send-btn:hover{background:#1765cc;}
+.send-btn:active{transform:scale(.94);}
+.send-btn svg{width:17px;height:17px;fill:#fff;}
+.send-btn:disabled{background:#333;cursor:default;}
+.send-btn:disabled svg{fill:#555;}
+.mic-active rect,.mic-active path{fill:#ea4335!important;stroke:#ea4335!important;}
+#fileInput{display:none;}
+@media(max-width:440px){.app{max-height:100vh;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Sidebar — exact original + nav links added -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <img class="sidebar-logo" id="sLogo" src="C:\Users\Admin\Desktop\Dreamweavear ai\frontend\assets" alt="logo"/>
+      <div><div class="sidebar-title">Dream-Pilot AI</div><div class="sidebar-subtitle">Scholarship Assistant</div></div>
+    </div>
+    <div class="sidebar-menu">
+      <div class="sidebar-section">Menu</div>
+      <div class="sidebar-item" onclick="newChat()">
+        <svg viewBox="0 0 24 24" fill="#9aa0a6"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>Naya Chat
+      </div>
+      <div class="sidebar-item" onclick="doChip('form');closeSidebar()">
+        <svg viewBox="0 0 24 24" fill="#4da6ff"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>Scholarship Form
+      </div>
+      <div class="sidebar-item" onclick="doChip('dhundo');closeSidebar()">
+        <svg viewBox="0 0 24 24" fill="#4dbb7a"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Scholarship Dhundo
+      </div>
+      <div class="sidebar-item" onclick="doChip('guidance');closeSidebar()">
+        <svg viewBox="0 0 24 24" fill="#f0a500"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>Guidance
+      </div>
+      <div class="sidebar-item" onclick="doChip('docs');closeSidebar()">
+        <svg viewBox="0 0 24 24" fill="#d97dff"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 9v5.5L10.5 15 8 16.5V11H7V9h6v2h-1z"/></svg>Documents
+      </div>
+      <div class="sidebar-section">Purane Chats</div>
+      <div class="sidebar-item" style="color:#555;font-size:13px;">
+        <svg viewBox="0 0 24 24" fill="#444"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>NSP Form Help
+      </div>
+      <div class="sidebar-item" style="color:#555;font-size:13px;">
+        <svg viewBox="0 0 24 24" fill="#444"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>PM Scholarship Query
+      </div>
+    </div>
+    <div class="sidebar-footer">Dream-Pilot AI v1.0 &bull; AAP KA SAATHI</div>
+  </div>
+
+  <!-- Topbar — exact original -->
+  <div class="topbar">
+    <div class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></div>
+    <div class="top-center">
+      <span class="app-name">Dream-Pilot AI</span>
+      <button class="model-badge">AAP KA SAATHI <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg></button>
+    </div>
+    <button class="icon-top-btn" onclick="newChat()">
+      <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+    </button>
+  </div>
+
+  <!-- Body — exact original -->
+  <div class="body" id="body">
+    <div class="hero" id="hero">
+      <img src="assets/C:\Users\Admin\Desktop\Dreamweavear ai\frontend\assets" alt="Dream-Pilot logo"class="logo-class">
+      <div class="hero-title">Namaste! 🎓<br/>Main hoon Dream-Pilot AI</div>
+      <div class="hero-sub">Scholarship form bharne mein aur guidance lene mein main aapki poori madad karunga</div>
+    </div>
+    <div class="chips-row" id="chips">
+      <div class="chip" onclick="doChip('form')">
+        <svg viewBox="0 0 24 24" fill="#4da6ff"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>Form Bharo
+      </div>
+      <div class="chip" onclick="doChip('dhundo')">
+        <svg viewBox="0 0 24 24" fill="#4dbb7a"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Scholarship Dhundo
+      </div>
+      <div class="chip" onclick="doChip('guidance')">
+        <svg viewBox="0 0 24 24" fill="#f0a500"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>Guidance Lo
+      </div>
+      <div class="chip" onclick="doChip('docs')">
+        <svg viewBox="0 0 24 24" fill="#d97dff"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 9v5.5L10.5 15 8 16.5V11H7V9h6v2h-1z"/></svg>Documents
+      </div>
+    </div>
+    <div class="chat-area" id="chatArea" style="display:none;"></div>
+  </div>
+
+  <!-- Input — exact original -->
+  <div class="input-wrap">
+    <div class="input-box">
+      <textarea class="input-field" id="inp" rows="1"
+        placeholder="Apna sawaal poochho ya form bharo..."
+        oninput="autoResize(this);toggleSend()"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage();}"></textarea>
+      <div class="input-bottom">
+        <div class="input-left">
+          <button class="icon-btn" onclick="document.getElementById('fileInput').click()">
+            <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zm-11.5-5.5 2.5 3.01L15.5 12l4.5 6H5l4.5-6z"/></svg>
+          </button>
+          <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFile(event)"/>
+        </div>
+        <div class="input-right">
+          <button class="icon-btn" id="micBtn" onclick="toggleMic()">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <rect x="9" y="2" width="6" height="11" rx="3" fill="#9aa0a6"/>
+              <path d="M5 11c0 3.87 3.13 7 7 7s7-3.13 7-7M8 21h8M12 18v3" stroke="#9aa0a6" stroke-width="2" fill="none"/>
+            </svg>
+          </button>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Logo (DP AI) ─────────────
+document.getElementById('hLogo').style.cssText='width:80px;height:80px;border-radius:18px;background:linear-gradient(135deg,#3a7bd5,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:36px;';
+document.getElementById('hLogo').outerHTML='<div style="width:80px;height:80px;border-radius:18px;background:linear-gradient(135deg,#3a7bd5,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:36px;">🤖</div>';
+document.getElementById('sLogo').outerHTML='<div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3a7bd5,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:16px;">🤖</div>';
+
+// ── AI Replies ─────────────────────────────────────────────────
+const R = {
+  form: null, // handled by showFormCard()
+  dhundo: `Aapke liye top scholarships! 🔍\n\n🏛️ Government (Free):\n• NSP - scholarships.gov.in\n• PM Scholarship Scheme\n• Begum Hazrat Mahal Scholarship\n\n📚 UP ke liye:\n• UP Scholarship (pfms.nic.in)\n• Mukhyamantri Abhyudaya Yojana\n\n🏢 Private:\n• Tata Capital Pankh Scholarship\n• Buddy4Study\n• Vidyasaarathi\n\nApni class aur category batao — best option suggest karunga! 🎯`,
+  guidance: `Scholarship guidance — step by step! 🌟\n\n📋 Process:\n1. Eligibility check karo\n2. Last date note karo\n3. Documents ready rakho\n4. Form carefully bharo\n5. Submit ke baad status track karo\n\n💡 Important Tips:\n✅ Bank account Aadhar se link hona chahiye\n✅ Documents 200KB se kam rakho\n✅ JPEG ya PDF format use karo\n✅ Mobile number active rakho\n\nKoi specific dikkat hai? Batao! 🙏`,
+  docs: `Scholarship ke liye ye documents chahiye: 📄\n\n✅ Zaroori Documents:\n• Aadhar Card (dono side)\n• Latest Marksheet\n• Income Certificate (2.5L se kam)\n• Bank Passbook (first page)\n• Passport Photo\n• Caste Certificate (SC/ST/OBC)\n\n📁 Format: JPEG ya PDF\n📏 Size: 200KB se kam\n\nKaunsi scholarship ke liye? Specific list dunga! 🎓`,
+  def: [
+    'Main aapki madad ke liye hoon! Koi bhi sawaal poochho. 😊',
+    'Haan ji! Class aur state batao — best scholarship suggest karunga.',
+    'Bilkul! NSP form, documents, ya kisi bhi scholarship ke baare mein poochh sakte hain.',
+    'Scholarship form bharna hai? "Form Bharo" button dabao! 📝'
+  ]
+};
+
+function getReply(m) {
+  const t = m.toLowerCase();
+  if (t.includes('doc') || t.includes('kagaz') || t.includes('certificate')) return R.docs;
+  if (t.includes('guid') || t.includes('help') || t.includes('kaise')) return R.guidance;
+  if (t.includes('dhund') || t.includes('scholarship') || t.includes('kaun')) return R.dhundo;
+  if (t.includes('nsp') || t.includes('portal')) return `NSP (National Scholarship Portal):\n\n🌐 scholarships.gov.in\n\n📝 Steps:\n1. "New Registration" click karo\n2. Aadhar OTP se verify karo\n3. Sab details bharo\n4. Password save karo\n\n⚠️ Aadhar mobile se linked hona chahiye!\n\nAur kuch poochhna hai? 😊`;
+  return R.def[Math.floor(Math.random() * R.def.length)];
+}
+
+// ── Show/Hide hero ─────────────────────────────────────────────
+function startChat() {
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('chips').style.display = 'none';
+  const ca = document.getElementById('chatArea');
+  ca.style.display = 'flex';
+  document.getElementById('body').style.justifyContent = 'flex-start';
+  document.getElementById('body').style.paddingTop = '16px';
+}
+
+// ── Add message ────────────────────────────────────────────────
+function addMsg(text, isUser) {
+  startChat();
+  const ca = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'msg ' + (isUser ? 'user' : 'bot');
+  if (!isUser) {
+    const h = document.createElement('div');
+    h.className = 'bot-header';
+    h.innerHTML = '<div style="width:18px;height:18px;border-radius:4px;background:linear-gradient(135deg,#3a7bd5,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">🤖</div><span class="bot-label">Dream-Pilot AI</span>';
+    div.appendChild(h);
+    const t = document.createElement('div');
+    t.textContent = text;
+    div.appendChild(t);
+  } else {
+    div.textContent = text;
+  }
+  ca.appendChild(div);
+  div.scrollIntoView({ block: 'end', behavior: 'smooth' });
+}
+
+function addTyping() {
+  startChat();
+  const ca = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className = 'msg bot'; div.id = 'typing';
+  div.innerHTML = '<div class="bot-header"><div style="width:18px;height:18px;border-radius:4px;background:linear-gradient(135deg,#3a7bd5,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">🤖</div><span class="bot-label">Dream-Pilot AI</span></div><div class="typing-dots"><span></span><span></span><span></span></div>';
+  ca.appendChild(div);
+  div.scrollIntoView({ block: 'end', behavior: 'smooth' });
+}
+
+function removeTyping() { const t = document.getElementById('typing'); if (t) t.remove(); }
+
+// ── Send message ───────────────────────────────────────────────
+function sendMessage() {
+  const inp = document.getElementById('inp');
+  const text = inp.value.trim();
+  if (!text) return;
+  addMsg(text, true);
+  inp.value = ''; autoResize(inp); toggleSend();
+  addTyping();
+  setTimeout(() => { removeTyping(); addMsg(getReply(text), false); }, 900);
+}
+
+// ── Chip handler ───────────────────────────────────────────────
+function doChip(k) {
+  if (k === 'form') { showFormCard(); return; }
+  const map = {
+    dhundo:   'Mujhe scholarship dhundhne mein madad karo',
+    guidance: 'Scholarship ke liye guidance chahiye',
+    docs:     'Documents checklist kya hai?'
+  };
+  document.getElementById('inp').value = map[k];
+  toggleSend(); sendMessage();
+}
+
+// ── STUDENT FORM CARD ──────────────────────────────────────────
+function showFormCard() {
+  startChat();
+  const ca = document.getElementById('chatArea');
+
+  // Bot message first
+  const intro = document.createElement('div');
+  intro.className = 'msg bot';
+  intro.innerHTML = '<div class="bot-header"><div style="width:18px;height:18px;border-radius:4px;background:linear-gradient(135deg,#3a7bd5,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;">🤖</div><span class="bot-label">Dream-Pilot AI</span></div><div>Apni details bharo — main eligible scholarships suggest karunga! 🎯</div>';
+  ca.appendChild(intro);
+
+  // Form card
+  const formDiv = document.createElement('div');
+  formDiv.className = 'msg bot';
+  formDiv.style.maxWidth = '100%';
+  formDiv.innerHTML = `
+    <div class="form-card">
+      <h4>📝 Student Profile Form</h4>
+      <div class="fc-group">
+        <label>Poora Naam *</label>
+        <input type="text" id="fc_name" placeholder="Jaise: Rahul Kumar"/>
+      </div>
+      <div class="fc-row">
+        <div class="fc-group">
+          <label>Class / Course *</label>
+          <select id="fc_class">
+            <option value="">-- Select --</option>
+            <option>Class 10</option>
+            <option>Class 11</option>
+            <option>Class 12</option>
+            <option>Polytechnic 1st Year</option>
+            <option>Polytechnic 2nd Year</option>
+            <option>Polytechnic 3rd Year</option>
+            <option>B.Tech 1st Year</option>
+            <option>B.Tech 2nd Year</option>
+            <option>Graduation</option>
+            <option>Post Graduation</option>
+          </select>
+        </div>
+        <div class="fc-group">
+          <label>Marks %</label>
+          <input type="number" id="fc_marks" placeholder="Jaise: 78" min="0" max="100"/>
+        </div>
+      </div>
+      <div class="fc-row">
+        <div class="fc-group">
+          <label>State *</label>
+          <select id="fc_state">
+            <option value="">-- Select --</option>
+            <option>Uttar Pradesh</option>
+            <option>Delhi</option>
+            <option>Madhya Pradesh</option>
+            <option>Bihar</option>
+            <option>Rajasthan</option>
+            <option>Maharashtra</option>
+            <option>Gujarat</option>
+            <option>West Bengal</option>
+            <option>Uttarakhand</option>
+            <option>Jharkhand</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="fc-group">
+          <label>Category *</label>
+          <select id="fc_cat">
+            <option value="">-- Select --</option>
+            <option>General</option>
+            <option>OBC</option>
+            <option>SC</option>
+            <option>ST</option>
+            <option>EWS</option>
+          </select>
+        </div>
+      </div>
+      <div class="fc-group">
+        <label>Family Annual Income</label>
+        <select id="fc_income">
+          <option value="">-- Select --</option>
+          <option>Below 1 Lakh</option>
+          <option>1 - 2.5 Lakh</option>
+          <option>2.5 - 5 Lakh</option>
+          <option>Above 5 Lakh</option>
+        </select>
+      </div>
+      <button class="fc-submit" onclick="submitForm()">🚀 Scholarship Dhundo</button>
+    </div>`;
+  ca.appendChild(formDiv);
+  formDiv.scrollIntoView({ block: 'end', behavior: 'smooth' });
+}
+
+function submitForm() {
+  const name   = (document.getElementById('fc_name')?.value || '').trim();
+  const cls    = document.getElementById('fc_class')?.value || '';
+  const marks  = document.getElementById('fc_marks')?.value || '';
+  const state  = document.getElementById('fc_state')?.value || '';
+  const cat    = document.getElementById('fc_cat')?.value || '';
+  const income = document.getElementById('fc_income')?.value || '';
+
+  if (!name || !cls || !state || !cat) {
+    addTyping();
+    setTimeout(() => { removeTyping(); addMsg('Naam, Class, State aur Category zaroori hain. Kripya fill karein! 🙏', false); }, 500);
+    return;
+  }
+
+  addMsg(`Naam: ${name} | Class: ${cls} | State: ${state} | Category: ${cat}${marks ? ' | Marks: ' + marks + '%' : ''}${income ? ' | Income: ' + income : ''}`, true);
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    let reply = `${name} ji, aapki profile ke hisaab se ye scholarships eligible hain: 🎓\n\n`;
+
+    // Always applicable
+    reply += `✅ NSP - scholarships.gov.in\n`;
+
+    // State specific
+    if (state === 'Uttar Pradesh') reply += `✅ UP Scholarship Portal - upschorship.nic.in\n✅ Mukhyamantri Abhyudaya Yojana\n`;
+    if (state === 'Delhi')         reply += `✅ Delhi Merit Scholarship\n✅ Delhi Ration Card Scholarship\n`;
+    if (state === 'Madhya Pradesh') reply += `✅ MP Medhavi Chhatra Protsahan\n`;
+    if (state === 'Bihar')         reply += `✅ Bihar Mukhyamantri Kanya Utthan Yojana\n`;
+
+    // Category specific
+    if (cat === 'SC' || cat === 'ST') reply += `✅ Post Matric Scholarship SC/ST\n✅ Pre Matric Scholarship\n`;
+    if (cat === 'OBC')  reply += `✅ OBC Post Matric Scholarship\n`;
+    if (cat === 'EWS')  reply += `✅ EWS Scholarship Scheme\n`;
+
+    // Marks based
+    if (marks && parseInt(marks) >= 85) reply += `✅ Merit Scholarship (85%+)\n`;
+    if (marks && parseInt(marks) >= 75) reply += `✅ National Merit Scholarship\n`;
+
+    // Income based
+    if (income === 'Below 1 Lakh' || income === '1 - 2.5 Lakh') reply += `✅ Begum Hazrat Mahal Scholarship\n✅ Inspire Scholarship (Science)\n`;
+
+    reply += `\n💡 Sabse pehle NSP par register karo.\nAur help chahiye toh batao! 🙏`;
+    addMsg(reply, false);
+  }, 1200);
+}
+
+// ── Sidebar ────────────────────────────────────────────────────
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');  document.getElementById('overlay').classList.add('show'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('show'); }
+function newChat()      { location.reload(); }
+
+// ── File ───────────────────────────────────────────────────────
+function handleFile(e) {
+  const f = e.target.files[0]; if (!f) return;
+  addMsg('📎 ' + f.name, true);
+  addTyping();
+  setTimeout(() => { removeTyping(); addMsg(`File "${f.name}" mil gayi! 📄\nYeh document valid hai. Document type batao (Aadhar / Marksheet / Income Certificate / Passbook)?`, false); }, 800);
+}
+
+// ── Mic ────────────────────────────────────────────────────────
+let micOn = false, recognition = null;
+function toggleMic() {
+  const btn = document.getElementById('micBtn');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { addMsg('Voice Chrome mein kaam karta hai. Browser change karein.', false); return; }
+  if (!recognition) {
+    recognition = new SR();
+    recognition.lang = 'hi-IN';
+    recognition.interimResults = true;
+    recognition.onstart  = () => { micOn = true;  btn.classList.add('mic-active'); };
+    recognition.onresult = e  => { document.getElementById('inp').value = Array.from(e.results).map(r => r[0].transcript).join(''); autoResize(document.getElementById('inp')); toggleSend(); };
+    recognition.onerror  = () => stopMic();
+    recognition.onend    = () => stopMic();
+  }
+  micOn ? recognition.stop() : recognition.start();
+}
+function stopMic() { micOn = false; document.getElementById('micBtn').classList.remove('mic-active'); }
+
+// ── Helpers ────────────────────────────────────────────────────
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 100) + 'px'; }
+function toggleSend()   { document.getElementById('sendBtn').disabled = !document.getElementById('inp').value.trim(); }
+</script>
+</body>
+</html>
